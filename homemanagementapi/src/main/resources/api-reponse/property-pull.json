@@ -1,0 +1,78 @@
+[
+  {
+    "id": "4551-Katherine-Dr,-Round-Rock,-TX-78681",
+    "formattedAddress": "4551 Katherine Dr, Round Rock, TX 78681",
+    "addressLine1": "4551 Katherine Dr",
+    "addressLine2": null,
+    "city": "Round Rock",
+    "state": "TX",
+    "stateFips": "48",
+    "zipCode": "78681",
+    "county": "Williamson",
+    "countyFips": "491",
+    "latitude": 30.553545,
+    "longitude": -97.762162,
+    "propertyType": "Condo",
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "squareFootage": 2393,
+    "lotSize": 9117,
+    "yearBuilt": 2018,
+    "assessorID": "R-17-W331-4000-0208",
+    "legalDescription": "C652 - GARDENS AT MAYFIELD CONDOS, UNIT 208, 0.833% COMMON AREA INTEREST, 0.2093 AC",
+    "subdivision": "GARDENS/MAYFIELD CONDOS",
+    "lastSaleDate": "2019-05-29T00:00:00.000Z",
+    "features": {
+      "architectureType": "Condo / Apartment",
+      "cooling": true,
+      "coolingType": "Central",
+      "floorCount": 1,
+      "foundationType": "Slab / Mat / Raft",
+      "garage": true,
+      "garageType": "Garage",
+      "heating": true,
+      "heatingType": "Central"
+    },
+    "taxAssessments": {
+      "2022": {
+        "year": 2022,
+        "value": 445676,
+        "land": 53322,
+        "improvements": 392354
+      },
+      "2023": {
+        "year": 2023,
+        "value": 558198,
+        "land": 93962,
+        "improvements": 464236
+      }
+    },
+    "propertyTaxes": {
+      "2022": {
+        "year": 2022,
+        "total": 8942
+      },
+      "2023": {
+        "year": 2023,
+        "total": 8471
+      }
+    },
+    "owner": {
+      "names": [
+        "Shyam K Ramath",
+        "Ambili Reghunath"
+      ],
+      "mailingAddress": {
+        "id": "4551-Katherine-Dr,-Round-Rock,-TX-78681",
+        "formattedAddress": "4551 Katherine Dr, Round Rock, TX 78681",
+        "addressLine1": "4551 Katherine Dr",
+        "addressLine2": null,
+        "city": "Round Rock",
+        "state": "TX",
+        "stateFips": "48",
+        "zipCode": "78681"
+      }
+    },
+    "ownerOccupied": true
+  }
+]
