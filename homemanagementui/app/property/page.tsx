@@ -56,8 +56,11 @@ function PropertyContent() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
-  // Get searched address from URL params
+  // Get URL params
+  const assessorId = searchParams.get("assessorId");
   const searchedAddress = {
     street: searchParams.get("street"),
     city: searchParams.get("city"),
@@ -66,10 +69,72 @@ function PropertyContent() {
   };
   const hasSearchedAddress = searchedAddress.street && searchedAddress.city;
 
+  async function handleAddToInventory() {
+    if (!property) return;
+
+    setSaveStatus("saving");
+    setSaveMessage(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/home/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(property),
+      });
+
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(responseText || `Failed to save: ${response.status}`);
+      }
+
+      setSaveStatus("success");
+      setSaveMessage(responseText || "Property added to inventory successfully!");
+
+      // Reset message after 3 seconds
+      setTimeout(() => {
+        setSaveMessage(null);
+        setSaveStatus("idle");
+      }, 3000);
+    } catch (err) {
+      setSaveStatus("error");
+      setSaveMessage(err instanceof Error ? err.message : "Failed to save property");
+
+      // Reset error after 5 seconds
+      setTimeout(() => {
+        setSaveMessage(null);
+        setSaveStatus("idle");
+      }, 5000);
+    }
+  }
+
   useEffect(() => {
     async function fetchProperty() {
       try {
-        const response = await fetch(`${API_BASE_URL}/home/dummyproperty`);
+        let response;
+
+        if (assessorId) {
+          // Fetch by assessorId from inventory
+          response = await fetch(
+            `${API_BASE_URL}/home/details/${encodeURIComponent(assessorId)}`
+          );
+        } else if (hasSearchedAddress) {
+          // Fetch by address from search - POST with JSON payload
+          const formattedAddress = `${searchedAddress.street}, ${searchedAddress.city}, ${searchedAddress.state} ${searchedAddress.zipcode || ""}`.trim();
+          response = await fetch(`${API_BASE_URL}/home/property`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ address: formattedAddress }),
+          });
+        } else {
+          // Fallback to dummy property
+          response = await fetch(`${API_BASE_URL}/home/dummyproperty`);
+        }
+
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
         }
@@ -84,7 +149,7 @@ function PropertyContent() {
     }
 
     fetchProperty();
-  }, []);
+  }, [assessorId, hasSearchedAddress, searchedAddress.street, searchedAddress.city, searchedAddress.state, searchedAddress.zipcode]);
 
   if (loading) {
     return (
@@ -124,13 +189,62 @@ function PropertyContent() {
       {/* Hero Section */}
       <div className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto max-w-6xl px-6 py-8">
+          {/* Top bar with Add to Inventory button */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              {property.propertyType && <Badge variant="info">{property.propertyType}</Badge>}
+              {property.ownerOccupied && <Badge variant="success">Owner Occupied</Badge>}
+              {hasSearchedAddress && <Badge variant="success">Searched</Badge>}
+            </div>
+            <button
+              onClick={handleAddToInventory}
+              disabled={saveStatus === "saving" || saveStatus === "success"}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                saveStatus === "success"
+                  ? "bg-green-600 text-white"
+                  : saveStatus === "saving"
+                  ? "bg-zinc-400 text-white cursor-wait"
+                  : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              }`}
+            >
+              {saveStatus === "saving" ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Saving...
+                </>
+              ) : saveStatus === "success" ? (
+                <>
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Added!
+                </>
+              ) : (
+                <>
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add to Inventory
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Success/Error Message */}
+          {saveMessage && (
+            <div
+              className={`mb-4 rounded-lg p-3 text-sm ${
+                saveStatus === "success"
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+              }`}
+            >
+              {saveMessage}
+            </div>
+          )}
+
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <div className="mb-2 flex flex-wrap items-center gap-2">
-                {property.propertyType && <Badge variant="info">{property.propertyType}</Badge>}
-                {property.ownerOccupied && <Badge variant="success">Owner Occupied</Badge>}
-                {hasSearchedAddress && <Badge variant="success">Searched</Badge>}
-              </div>
               <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
                 {hasSearchedAddress ? searchedAddress.street : property.addressLine1}
               </h1>
@@ -289,6 +403,22 @@ function PropertyContent() {
               </div>
             </div>
           </Section>
+
+          {/* QR Code */}
+          {property.assessorID && (
+            <Section title="Property QR Code">
+              <div className="flex flex-col items-center gap-4">
+                <img
+                  src={`${API_BASE_URL}/barcodes/home/${encodeURIComponent(property.assessorID)}`}
+                  alt="Property QR Code"
+                  className="h-40 w-40 rounded-lg border border-zinc-200 dark:border-zinc-700"
+                />
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  Scan to access property information
+                </p>
+              </div>
+            </Section>
+          )}
         </div>
       </div>
     </div>

@@ -8,6 +8,8 @@ const navLinks = [
   { href: "/search", label: "Search" },
   { href: "/homes", label: "Homes" },
   { href: "/property", label: "Property" },
+  { href: "/inventory", label: "Inventory" },
+  { href: "/subscription", label: "Pricing" },
 ];
 
 export default function Header() {
@@ -46,6 +48,22 @@ export default function Header() {
               );
             })}
           </nav>
+
+          {/* Auth Buttons */}
+          <div className="hidden items-center gap-2 sm:flex">
+            <Link
+              href="/login"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Sign up
+            </Link>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="sm:hidden">
@@ -86,6 +104,19 @@ function MobileMenu({ pathname }: { pathname: string }) {
             </Link>
           );
         })}
+        <div className="my-2 border-t border-zinc-200 dark:border-zinc-700" />
+        <Link
+          href="/login"
+          className="block rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-700"
+        >
+          Login
+        </Link>
+        <Link
+          href="/signup"
+          className="block rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-700"
+        >
+          Sign up
+        </Link>
       </div>
     </div>
   );

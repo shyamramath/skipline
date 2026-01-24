@@ -1,12 +1,14 @@
 package com.java.homemanagementapi.controllers;
 
 import com.java.homemanagementapi.Home;
+import com.java.homemanagementapi.RequestObject;
 import com.java.homemanagementapi.constants.UrlConstants;
 import com.java.homemanagementapi.repository.HomeRepository;
 import com.java.homemanagementapi.service.BarcodeService;
 import com.java.homemanagementapi.utils.HttpClient;
 import okhttp3.Response;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +45,9 @@ public class HomeDetailsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(UrlConstants.PROPERTY_PATH)
-    public String getPropertyData() throws Exception {
-        Response response = httpClient.fetchPropertyData();
+    @PostMapping(UrlConstants.PROPERTY_PATH)
+    public String getPropertyData(@RequestBody RequestObject requestObject) throws Exception {
+        Response response = httpClient.fetchPropertyData(requestObject.getAddress());
         return response.body().string();
     }
 
@@ -56,13 +58,26 @@ public class HomeDetailsController {
     }
 
     @PostMapping("/save")
-    public Home savePropertyDetails(@RequestBody Home home) throws IOException {
-        String barcodeText = home.getFormattedAddress() != null
-            ? home.getFormattedAddress()
-            : home.getAddressLine1() + ", " + home.getCity() + ", " + home.getState() + " " + home.getZipCode();
+    public ResponseEntity<String> savePropertyDetails(@RequestBody Home home) throws IOException {
+
+//        String barcodeText = home.getFormattedAddress() != null
+//            ? home.getFormattedAddress()
+//            : home.getAddressLine1() + ", " + home.getCity() + ", " + home.getState() + " " + home.getZipCode();
+
+        String barcodeText = "http://localhost:8080/home/details/"+home.getAssessorID().trim();
+
         byte[] barcode = barcodeService.generateQrCode(barcodeText);
         home.setBarcode(barcode);
-        return homeRepository.save(home);
+
+        boolean exists = homeRepository.findByAssessorID(home.getAssessorID().trim()).isPresent();
+
+        if (exists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Home with Assessor ID \"" + home.getAssessorID() + "\" already exists.");
+        }
+
+        homeRepository.save(home);
+        return ResponseEntity.ok("Home with Assessor ID \"" + home.getAssessorID() + "\" saved successfully.");
     }
 
     @GetMapping("/fetchall")

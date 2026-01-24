@@ -129,10 +129,10 @@ export default function AddressSearchPage() {
       <main className="mx-auto max-w-4xl px-6 py-12">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            Address Search
+            Find your home
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            Search for a US address using SmartyStreets autocomplete
+            Search for a US address to get started ..
           </p>
         </div>
 
@@ -294,10 +294,10 @@ export default function AddressSearchPage() {
               <span className="mt-1 text-green-500">✓</span>
               Select an address from the dropdown to verify and use it
             </li>
-            <li className="flex items-start gap-2">
+            {/* <li className="flex items-start gap-2">
               <span className="mt-1 text-green-500">✓</span>
               Powered by SmartyStreets address verification API
-            </li>
+            </li> */}
           </ul>
         </div>
       </main>
