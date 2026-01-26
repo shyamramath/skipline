@@ -1,3 +1,6 @@
+Stripe API Keys Management Dashboard:
+https://dashboard.stripe.com/apikeys
+
 Start a PostgreSQL container with Docker:
 docker run --name home-service -e POSTGRES_PASSWORD=root -d -p 5432:5432 postgres
 
