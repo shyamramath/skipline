@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Types;
 import java.util.Map;
 
 @Entity
@@ -118,6 +119,6 @@ public class Home {
     private Boolean ownerOccupied;
 
     @Column(name = "barcode")
-    @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARBINARY)
+    @org.hibernate.annotations.JdbcTypeCode(Types.BLOB)
     private byte[] barcode;
 }
