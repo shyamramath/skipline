@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { APP_CONFIG } from "./config/app.config";
 
 export default function HomePage() {
   return (
@@ -15,7 +16,7 @@ export default function HomePage() {
                 <span className="text-blue-600 dark:text-blue-400">Our Priority</span>
               </h1>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-                Register your home with HomeManager and let our expert handymen take care of all your repair needs. From minor fixes to major renovations, we&apos;ve got you covered.
+                Register your home with {APP_CONFIG.name} and let our expert handymen take care of all your repair needs. From minor fixes to major renovations, we&apos;ve got you covered.
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center md:justify-start">
                 <Link

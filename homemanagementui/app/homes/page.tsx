@@ -13,7 +13,7 @@ export default function HomesPage() {
   useEffect(() => {
     async function fetchHomes() {
       try {
-        const response = await fetch(`${API_BASE_URL}/home/details`);
+        const response = await fetch(`${API_BASE_URL}/api/home/details`);
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
         }

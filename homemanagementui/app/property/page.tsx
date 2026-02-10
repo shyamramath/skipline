@@ -76,11 +76,12 @@ function PropertyContent() {
     setSaveMessage(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/home/save`, {
+      const response = await fetch(`${API_BASE_URL}/api/home/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(property),
       });
 
@@ -93,11 +94,10 @@ function PropertyContent() {
       setSaveStatus("success");
       setSaveMessage(responseText || "Property added to inventory successfully!");
 
-      // Reset message after 3 seconds
-      setTimeout(() => {
-        setSaveMessage(null);
-        setSaveStatus("idle");
-      }, 3000);
+      // Redirect to services page for this property
+      window.location.href = property.assessorID
+        ? `/services?assessorId=${encodeURIComponent(property.assessorID)}`
+        : "/services";
     } catch (err) {
       setSaveStatus("error");
       setSaveMessage(err instanceof Error ? err.message : "Failed to save property");
@@ -118,12 +118,12 @@ function PropertyContent() {
         if (assessorId) {
           // Fetch by assessorId from inventory
           response = await fetch(
-            `${API_BASE_URL}/home/details/${encodeURIComponent(assessorId)}`
+            `${API_BASE_URL}/api/home/details/${encodeURIComponent(assessorId)}`
           );
         } else if (hasSearchedAddress) {
           // Fetch by address from search - POST with JSON payload
           const formattedAddress = `${searchedAddress.street}, ${searchedAddress.city}, ${searchedAddress.state} ${searchedAddress.zipcode || ""}`.trim();
-          response = await fetch(`${API_BASE_URL}/home/property`, {
+          response = await fetch(`${API_BASE_URL}/api/home/property`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -132,7 +132,7 @@ function PropertyContent() {
           });
         } else {
           // Fallback to dummy property
-          response = await fetch(`${API_BASE_URL}/home/dummyproperty`);
+          response = await fetch(`${API_BASE_URL}/api/home/dummyproperty`);
         }
 
         if (!response.ok) {
@@ -345,13 +345,13 @@ function PropertyContent() {
                       <tr key={assessment.year} className="border-b border-zinc-100 last:border-0 dark:border-zinc-800">
                         <td className="py-3 font-medium text-zinc-900 dark:text-zinc-100">{assessment.year}</td>
                         <td className="py-3 text-right text-zinc-900 dark:text-zinc-100">
-                          ${assessment.value.toLocaleString()}
+                          ${assessment.value?.toLocaleString() ?? "N/A"}
                         </td>
                         <td className="py-3 text-right text-zinc-600 dark:text-zinc-400">
-                          ${assessment.land.toLocaleString()}
+                          ${assessment.land?.toLocaleString() ?? "N/A"}
                         </td>
                         <td className="py-3 text-right text-zinc-600 dark:text-zinc-400">
-                          ${assessment.improvements.toLocaleString()}
+                          ${assessment.improvements?.toLocaleString() ?? "N/A"}
                         </td>
                       </tr>
                     ))}
@@ -409,7 +409,7 @@ function PropertyContent() {
             <Section title="Property QR Code">
               <div className="flex flex-col items-center gap-4">
                 <img
-                  src={`${API_BASE_URL}/barcodes/home/${encodeURIComponent(property.assessorID)}`}
+                  src={`${API_BASE_URL}/api/barcodes/home/${encodeURIComponent(property.assessorID)}`}
                   alt="Property QR Code"
                   className="h-40 w-40 rounded-lg border border-zinc-200 dark:border-zinc-700"
                 />

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { APP_CONFIG } from "../../config/app.config";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -33,7 +34,7 @@ function SuccessContent() {
             Payment Successful!
           </h1>
           <p className="mt-3 text-zinc-600 dark:text-zinc-400">
-            Thank you for subscribing to HomeManager. Your subscription is now active.
+            Thank you for subscribing to {APP_CONFIG.name}. Your subscription is now active.
           </p>
 
           {sessionId && (

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { APP_CONFIG } from "../config/app.config";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -35,15 +36,14 @@ export default function SignupPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
-      setLoading(false);
       return;
     }
+
+    setLoading(true);
 
     try {
       // TODO: Implement actual signup API call
@@ -52,8 +52,8 @@ export default function SignupPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Redirect on success
-      window.location.href = "/login";
+      // Redirect to search on success
+      window.location.href = "/search";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
     } finally {
@@ -66,15 +66,15 @@ export default function SignupPage() {
       <div className="w-full max-w-md px-6">
         <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           {/* Header */}
-          <div className="mb-8 text-center">
+          <div className="mb-6 text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 dark:bg-zinc-100">
-              <span className="text-xl font-bold text-white dark:text-zinc-900">H</span>
+              <span className="text-xl font-bold text-white dark:text-zinc-900">{APP_CONFIG.logo}</span>
             </div>
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               Create an account
             </h1>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              Get started with HomeManager today
+              Get started with {APP_CONFIG.name} today
             </p>
           </div>
 
@@ -85,7 +85,6 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -232,7 +231,7 @@ export default function SignupPage() {
                   Creating account...
                 </span>
               ) : (
-                "Create account"
+                "Create Account"
               )}
             </button>
           </form>

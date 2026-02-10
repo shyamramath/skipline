@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { APP_CONFIG } from "../config/app.config";
 
 export default function AboutPage() {
   return (
@@ -9,7 +10,7 @@ export default function AboutPage() {
       <section className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
           <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 md:text-5xl">
-            About HomeManager
+            About {APP_CONFIG.name}
           </h1>
           <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
             Helping homeowners protect their biggest investment since 2019
@@ -25,7 +26,7 @@ export default function AboutPage() {
           </h2>
           <div className="mt-6 space-y-4 text-zinc-600 dark:text-zinc-400">
             <p>
-              HomeManager was born out of a frustrating personal experience. In 2018, our founder
+              {APP_CONFIG.name} was born out of a frustrating personal experience. In 2018, our founder
               Michael Chen purchased his first home—a charming 1960s ranch in Austin, Texas.
               Within six months, he discovered a hidden water leak that had been slowly damaging
               the foundation for years. The repair cost over $40,000 and could have been prevented
@@ -35,7 +36,7 @@ export default function AboutPage() {
               That experience sparked a mission: to make professional home inspections accessible,
               transparent, and truly comprehensive. Michael partnered with his college roommate
               Sarah Martinez, a licensed structural engineer, and together they built what would
-              become HomeManager.
+              become {APP_CONFIG.name}.
             </p>
             <p>
               What started as a two-person operation working out of a garage has grown into a
@@ -184,7 +185,7 @@ export default function AboutPage() {
                 year: "2019",
                 title: "The Beginning",
                 description:
-                  "HomeManager founded in Austin, TX. First inspection completed in Michael's own neighborhood.",
+                  "{APP_CONFIG.name} founded in Austin, TX. First inspection completed in Michael's own neighborhood.",
               },
               {
                 year: "2020",
@@ -246,7 +247,7 @@ export default function AboutPage() {
         <section className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-center text-white">
           <h2 className="text-2xl font-bold">Ready to protect your home?</h2>
           <p className="mt-2 text-blue-100">
-            Join thousands of homeowners who trust HomeManager with their biggest investment.
+            Join thousands of homeowners who trust {APP_CONFIG.name} with their biggest investment.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-4 sm:flex-row">
             <Link

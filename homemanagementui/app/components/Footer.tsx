@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { APP_CONFIG } from "../config/app.config";
 
 export default function Footer() {
   return (
@@ -8,10 +9,10 @@ export default function Footer() {
           {/* Logo & Copyright */}
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-zinc-900 dark:bg-zinc-100">
-              <span className="text-xs font-bold text-white dark:text-zinc-900">H</span>
+              <span className="text-xs font-bold text-white dark:text-zinc-900">{APP_CONFIG.logo}</span>
             </div>
             <span className="text-sm text-zinc-500 dark:text-zinc-400">
-              © {new Date().getFullYear()} HomeManager. All rights reserved.
+              © {new Date().getFullYear()} {APP_CONFIG.name}. All rights reserved.
             </span>
           </div>
 
