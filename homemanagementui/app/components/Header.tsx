@@ -10,9 +10,11 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/search", label: "Search" },
   { href: "/inventory", label: "Inventory" },
-  { href: "/schedule-inspection", label: "Schedule" },
+  { href: "/schedule-inspection", label: "Schedule", authRequired: true },
   { href: "/subscription", label: "Pricing" },
+  { href: "/reviews", label: "Reviews" },
   { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -35,7 +37,7 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden items-center gap-1 sm:flex">
-            {navLinks.map((link) => {
+            {navLinks.filter((link) => !link.authRequired || isAuthenticated).map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
@@ -290,7 +292,7 @@ function MobileMenu({
           )}
 
           {/* Nav Links */}
-          {navLinks.map((link) => {
+          {navLinks.filter((link) => !link.authRequired || isAuthenticated).map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link

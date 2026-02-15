@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+import { useRouter } from "next/navigation";
+import PaymentModal from "../components/PaymentModal";
 
 interface InspectionPlan {
   id: string;
@@ -140,42 +137,39 @@ const maintenancePlans: MaintenancePlan[] = [
 type TabType = "inspection" | "maintenance";
 type BillingType = "monthly" | "yearly";
 
+interface SelectedPlan {
+  id: string;
+  name: string;
+  price: number;
+  period: string;
+  type: "inspection" | "maintenance";
+}
+
 export default function SubscriptionPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("inspection");
   const [billing, setBilling] = useState<BillingType>("monthly");
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<SelectedPlan | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  async function handleCheckout(planId: string, planType: "inspection" | "maintenance") {
-    setLoadingPlan(planId);
+  function handleSelectPlan(
+    planId: string,
+    planName: string,
+    price: number,
+    planType: "inspection" | "maintenance"
+  ) {
+    setSelectedPlan({
+      id: planId,
+      name: planName,
+      price,
+      period: planType === "inspection" ? "one-time" : billing,
+      type: planType,
+    });
+    setIsPaymentModalOpen(true);
+  }
 
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          plan: planId,
-          billingPeriod: planType === "inspection" ? "onetime" : billing,
-          planType,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
-      } else if (data.error) {
-        console.error("Checkout error:", data.error);
-        alert("Failed to start checkout. Please try again.");
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Failed to start checkout. Please try again.");
-    } finally {
-      setLoadingPlan(null);
-    }
+  function handlePaymentSuccess() {
+    router.push("/subscription/success");
   }
 
   return (
@@ -314,22 +308,14 @@ export default function SubscriptionPage() {
                   </ul>
 
                   <button
-                    onClick={() => handleCheckout(plan.id, "inspection")}
-                    disabled={loadingPlan === plan.id}
-                    className={`mt-6 w-full rounded-lg py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                    onClick={() => handleSelectPlan(plan.id, plan.name, plan.price, "inspection")}
+                    className={`mt-6 w-full rounded-lg py-3 text-sm font-semibold transition-colors ${
                       plan.popular
                         ? "bg-blue-600 text-white hover:bg-blue-700"
                         : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
                     }`}
                   >
-                    {loadingPlan === plan.id ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Processing...
-                      </span>
-                    ) : (
-                      "Book Inspection"
-                    )}
+                    Book Inspection
                   </button>
                 </div>
               ))
@@ -392,22 +378,14 @@ export default function SubscriptionPage() {
                     </ul>
 
                     <button
-                      onClick={() => handleCheckout(plan.id, "maintenance")}
-                      disabled={loadingPlan === plan.id}
-                      className={`mt-6 w-full rounded-lg py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                      onClick={() => handleSelectPlan(plan.id, plan.name, price, "maintenance")}
+                      className={`mt-6 w-full rounded-lg py-3 text-sm font-semibold transition-colors ${
                         plan.popular
                           ? "bg-blue-600 text-white hover:bg-blue-700"
                           : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
                       }`}
                     >
-                      {loadingPlan === plan.id ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Processing...
-                        </span>
-                      ) : (
-                        "Subscribe Now"
-                      )}
+                      Subscribe Now
                     </button>
                   </div>
                 );
@@ -481,6 +459,19 @@ export default function SubscriptionPage() {
           </div>
         </div>
       </main>
+
+      {/* Payment Modal */}
+      {selectedPlan && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          planName={selectedPlan.name}
+          planPrice={selectedPlan.price}
+          planPeriod={selectedPlan.period}
+          planType={selectedPlan.type}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
     </div>
   );
 }

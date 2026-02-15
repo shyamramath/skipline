@@ -31,6 +31,80 @@ const MAINTENANCE_PRICES: Record<string, Record<string, string>> = {
   },
 };
 
+// Handle GET requests (redirect from payment modal)
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const plan = searchParams.get("plan");
+  const amount = searchParams.get("amount");
+  const planType = searchParams.get("type") as "inspection" | "maintenance";
+  const period = searchParams.get("period");
+
+  if (!plan || !planType) {
+    return NextResponse.redirect(new URL("/subscription?error=missing_params", request.url));
+  }
+
+  const origin = request.headers.get("origin") || request.nextUrl.origin;
+
+  try {
+    // Create checkout session based on plan type
+    const amountInCents = Math.round(parseFloat(amount || "0") * 100);
+
+    if (planType === "inspection") {
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: plan,
+                description: "Professional home inspection service",
+              },
+              unit_amount: amountInCents,
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/subscription?canceled=true`,
+      });
+
+      return NextResponse.redirect(session.url!);
+    } else {
+      // Subscription
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: plan,
+                description: `${period === "month" ? "Monthly" : "Annual"} home maintenance subscription`,
+              },
+              unit_amount: amountInCents,
+              recurring: {
+                interval: period === "year" ? "year" : "month",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/subscription?canceled=true`,
+      });
+
+      return NextResponse.redirect(session.url!);
+    }
+  } catch (error) {
+    console.error("Stripe checkout error:", error);
+    return NextResponse.redirect(new URL("/subscription?error=checkout_failed", request.url));
+  }
+}
+
+// Handle POST requests (original API)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

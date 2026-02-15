@@ -13,6 +13,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Provide placeholder for server-side secrets so the build can collect page data.
+# Real values are injected at runtime via environment variables.
+ENV STRIPE_SECRET_KEY=placeholder_build_only
+
 # Build the application
 RUN npm run build
 
