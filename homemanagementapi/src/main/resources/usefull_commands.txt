@@ -4,3 +4,224 @@ https://dashboard.stripe.com/apikeys
 Start a PostgreSQL container with Docker:
 docker run --name home-service -e POSTGRES_PASSWORD=root -d -p 5432:5432 postgres
 
+
+Google login back-end URL
+ http://localhost:8080/api/auth/oauth2/authorize/google
+
+
+ Here's the OAuth 2.0 flow when you access http://localhost:8080/api/auth/oauth2/authorize/google:
+
+  Step-by-Step Flow
+
+  1. You visit: http://localhost:8080/api/auth/oauth2/authorize/google
+  - Spring Security intercepts this request
+  - Reads Google OAuth config from application.properties
+
+  2. Spring redirects you to Google:
+  https://accounts.google.com/o/oauth2/v2/auth?
+    client_id=287020914160-xxx.apps.googleusercontent.com
+    &redirect_uri=http://localhost:8080/api/auth/callback/google
+    &scope=email,profile
+    &response_type=code
+    &state=random_csrf_token
+
+  3. Google shows login page
+  - You enter your Google credentials
+  - You consent to share email/profile with the app
+
+  4. Google redirects back to your backend:
+  http://localhost:8080/api/auth/callback/google?code=AUTH_CODE&state=random_csrf_token
+  - Google sends an authorization code (not the user data yet)
+
+  5. Spring Security (behind the scenes):
+  - Exchanges the code for an access token by calling Google's token endpoint
+  - Uses the access token to fetch user info (email, name, picture) from Google's API
+  - Creates an OAuth2User principal with the user data
+
+  6. Your AuthController.googleCallback() runs:
+  - Receives the OAuth2User with user info
+  - Builds redirect URL with email, name, picture
+  - Redirects to http://localhost:3000/auth/success?email=...&name=...&picture=...
+
+  7. Frontend receives the user data via query parameters
+
+  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+  │ Browser  │───▶│ Backend  │───▶│  Google  │───▶│ Backend  │───▶ Frontend
+  │          │    │ /oauth2/ │    │  Login   │    │/callback │    /auth/success
+  │          │    │authorize │    │  Page    │    │ /google  │
+  └──────────┘    └──────────┘    └──────────┘    └──────────┘
+
+❯ http://localhost:8080/api/auth/oauth2/authorize/google
+
+⏺ Yes, that's the URL to initiate the Google OAuth login.
+
+  Is something not working, or do you have a question about it? If you want to integrate this into your frontend, you can add a login button like:
+
+  <button onClick={() => window.location.href = 'http://localhost:8080/api/auth/oauth2/authorize/google'}>
+    Sign in with Google
+  </button>
+
+  Or as a link:
+  <a href="http://localhost:8080/api/auth/oauth2/authorize/google">Sign in with Google</a>
+
+❯ Correct . How Spring boot is working can you explain that flow
+
+⏺ Spring Boot OAuth2 Internal Flow
+
+  When you hit http://localhost:8080/api/auth/oauth2/authorize/google, here's what happens inside Spring Boot:
+
+  1. Request Intercepted by Security Filter Chain
+
+  SecurityFilterChain (SecurityConfig.java)
+          │
+          ▼
+  OAuth2AuthorizationRequestRedirectFilter
+
+  Spring Security has a filter chain. The OAuth2AuthorizationRequestRedirectFilter catches any request matching /oauth2/authorize/{registrationId}.
+
+  2. Load Client Registration
+
+  Spring reads your application.properties:
+
+  spring.security.oauth2.client.registration.google.client-id=287020...
+  spring.security.oauth2.client.registration.google.client-secret=GOCSPX-...
+  spring.security.oauth2.client.registration.google.scope=email,profile
+  spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/api/auth/callback/google
+
+  Spring auto-configures a ClientRegistration object for "google" with predefined Google endpoints:
+  - Authorization URL: https://accounts.google.com/o/oauth2/v2/auth
+  - Token URL: https://oauth2.googleapis.com/token
+  - User Info URL: https://www.googleapis.com/oauth2/v3/userinfo
+
+  3. Build Authorization Request & Redirect
+
+  // Spring internally does this:
+  String authorizationUri = "https://accounts.google.com/o/oauth2/v2/auth" +
+      "?client_id=" + clientId +
+      "&redirect_uri=" + redirectUri +
+      "&scope=email+profile" +
+      "&response_type=code" +
+      "&state=" + generateRandomState();  // CSRF protection
+
+  response.sendRedirect(authorizationUri);
+
+  4. User Authenticates with Google
+
+  Google handles login → User consents → Google redirects back with code.
+
+  5. Callback Handled by OAuth2LoginAuthenticationFilter
+
+  GET /api/auth/callback/google?code=4/0AX4XfWh...&state=abc123
+          │
+          ▼
+  OAuth2LoginAuthenticationFilter
+          │
+          ▼
+  OAuth2LoginAuthenticationProvider
+
+  6. Exchange Code for Access Token
+
+  // Spring internally calls Google's token endpoint:
+  POST https://oauth2.googleapis.com/token
+  Content-Type: application/x-www-form-urlencoded
+
+  grant_type=authorization_code
+  &code=4/0AX4XfWh...
+  &client_id=287020...
+  &client_secret=GOCSPX-...
+  &redirect_uri=http://localhost:8080/api/auth/callback/google
+
+  Google responds with:
+  {
+    "access_token": "ya29.a0AfH6SMB...",
+    "expires_in": 3599,
+    "scope": "email profile",
+    "token_type": "Bearer",
+    "id_token": "eyJhbGciOiJSUzI1..."
+  }
+
+  7. Fetch User Info
+
+  // Spring calls Google's userinfo endpoint:
+  GET https://www.googleapis.com/oauth2/v3/userinfo
+  Authorization: Bearer ya29.a0AfH6SMB...
+
+  Google responds with:
+  {
+    "sub": "1234567890",
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "picture": "https://lh3.googleusercontent.com/..."
+  }
+
+  8. Create OAuth2User & Security Context
+
+  // Spring creates:
+  OAuth2User principal = new DefaultOAuth2User(
+      authorities,
+      Map.of("email", "john@gmail.com", "name", "John Doe", ...),
+      "sub"  // nameAttributeKey
+  );
+
+  // Stores in SecurityContext (session)
+  SecurityContextHolder.getContext().setAuthentication(authentication);
+
+  9. Your Controller Receives the Principal
+
+  @GetMapping("/callback/google")
+  public void googleCallback(@AuthenticationPrincipal OAuth2User principal, ...) {
+      // principal.getAttribute("email") → "john@gmail.com"
+      // principal.getAttribute("name")  → "John Doe"
+  }
+
+  Key Spring Classes Involved
+  ┌──────────────────────────────────────────┬──────────────────────────────────────────────────┐
+  │                  Class                   │                       Role                       │
+  ├──────────────────────────────────────────┼──────────────────────────────────────────────────┤
+  │ OAuth2AuthorizationRequestRedirectFilter │ Handles /oauth2/authorize/*, redirects to Google │
+  ├──────────────────────────────────────────┼──────────────────────────────────────────────────┤
+  │ OAuth2LoginAuthenticationFilter          │ Handles callback, processes the code             │
+  ├──────────────────────────────────────────┼──────────────────────────────────────────────────┤
+  │ OAuth2LoginAuthenticationProvider        │ Exchanges code for token, fetches user info      │
+  ├──────────────────────────────────────────┼──────────────────────────────────────────────────┤
+  │ DefaultOAuth2UserService                 │ Calls userinfo endpoint, creates OAuth2User      │
+  ├──────────────────────────────────────────┼──────────────────────────────────────────────────┤
+  │ OAuth2User                               │ Holds user attributes (email, name, picture)     │
+  └──────────────────────────────────────────┴──────────────────────────────────────────────────┘
+  Visual Summary
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                      SPRING BOOT                                 │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  /oauth2/authorize/google                                        │
+  │         │                                                        │
+  │         ▼                                                        │
+  │  OAuth2AuthorizationRequestRedirectFilter                        │
+  │         │                                                        │
+  │         │ redirect to Google                                     │
+  │         ▼                                                        │
+  │  ══════════════════════════════════════════                      │
+  │         │                                                        │
+  │         │ Google redirects back with code                        │
+  │         ▼                                                        │
+  │  /api/auth/callback/google?code=xxx                              │
+  │         │                                                        │
+  │         ▼                                                        │
+  │  OAuth2LoginAuthenticationFilter                                 │
+  │         │                                                        │
+  │         ▼                                                        │
+  │  OAuth2LoginAuthenticationProvider                               │
+  │         │── POST /token (exchange code)                          │
+  │         │── GET /userinfo (fetch user)                           │
+  │         ▼                                                        │
+  │  Create OAuth2User + SecurityContext                             │
+  │         │                                                        │
+  │         ▼                                                        │
+  │  AuthController.googleCallback(@AuthenticationPrincipal)         │
+  │         │                                                        │
+  │         ▼                                                        │
+  │  Redirect to frontend                                            │
+  └─────────────────────────────────────────────────────────────────┘
+
+  Google review PlaceID.
+    You can find your Place ID at: https://developers.google.com/maps/documentation/places/web-service/place-id

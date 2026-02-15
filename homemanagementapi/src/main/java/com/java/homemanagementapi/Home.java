@@ -5,6 +5,7 @@ import com.java.homemanagementapi.model.Features;
 import com.java.homemanagementapi.model.Owner;
 import com.java.homemanagementapi.model.PropertyTax;
 import com.java.homemanagementapi.model.TaxAssessment;
+import com.java.homemanagementapi.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,10 @@ public class Home {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dbId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
+    private User user;
 
     @JsonProperty("id")
     private String id;
@@ -103,6 +108,7 @@ public class Home {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "ownerName", column = @Column(name = "owner_name")),
             @AttributeOverride(name = "id", column = @Column(name = "owner_mailing_id")),
             @AttributeOverride(name = "formattedAddress", column = @Column(name = "owner_mailing_formatted_address")),
             @AttributeOverride(name = "addressLine1", column = @Column(name = "owner_mailing_address_line1")),

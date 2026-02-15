@@ -1,6 +1,7 @@
 package com.java.homemanagementapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
 import lombok.Data;
@@ -12,6 +13,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Owner {
+
+    @Column(name = "owner_name")
+    private String ownerName;
 
     @Transient
     @JsonProperty("names")

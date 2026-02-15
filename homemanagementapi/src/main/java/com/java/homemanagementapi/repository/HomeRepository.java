@@ -17,4 +17,6 @@ public interface HomeRepository extends JpaRepository<Home, Long> {
     List<Home> findByZipCode(String zipCode);
 
     Optional<Home> findByAssessorID(String assessorID);
+
+    List<Home> findByUserEmail(String email);
 }
