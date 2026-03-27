@@ -1,4 +1,3 @@
-# skipline
 # HomeManager
 
 A comprehensive home inspection and property management platform built with Next.js (frontend) and Spring Boot (backend).

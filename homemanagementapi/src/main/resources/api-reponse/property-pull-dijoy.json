@@ -1,0 +1,99 @@
+[
+  {
+    "id": "1804-Manada-Trl,-Cedar-Park,-TX-78641",
+    "formattedAddress": "1804 Manada Trl, Cedar Park, TX 78641",
+    "addressLine1": "1804 Manada Trl",
+    "addressLine2": null,
+    "city": "Cedar Park",
+    "state": "TX",
+    "stateFips": "48",
+    "zipCode": "78641",
+    "county": "Williamson",
+    "countyFips": "491",
+    "latitude": 30.546585,
+    "longitude": -97.786428,
+    "propertyType": "Single Family",
+    "bathrooms": 3.5,
+    "squareFootage": 3208,
+    "yearBuilt": 2014,
+    "assessorID": "R-17-W312-500F-0023-0005",
+    "legalDescription": "S9656 - CABALLO RANCH SEC 1, BLOCK F, LOT 23",
+    "subdivision": "CABALLO RANCH SEC 01",
+    "lastSaleDate": "2014-06-27T00:00:00.000Z",
+    "features": {
+      "cooling": true,
+      "coolingType": "Central",
+      "fireplace": true,
+      "floorCount": 2,
+      "foundationType": "Slab / Mat / Raft",
+      "garage": true,
+      "garageSpaces": 2,
+      "garageType": "Garage",
+      "heating": true,
+      "heatingType": "Central",
+      "exteriorType": "Marblecrete"
+    },
+    "taxAssessments": {
+      "2021": {
+        "year": 2021,
+        "value": 496673,
+        "land": 95000,
+        "improvements": 446187
+      },
+      "2022": {
+        "year": 2022,
+        "value": 541187,
+        "land": 95000,
+        "improvements": 446187
+      },
+      "2023": {
+        "year": 2023,
+        "value": 706068,
+        "land": 152000,
+        "improvements": 554068
+      },
+      "2024": {
+        "year": 2024,
+        "value": 661071,
+        "land": 152000,
+        "improvements": 574452
+      }
+    },
+    "propertyTaxes": {
+      "2021": {
+        "year": 2021,
+        "total": 11190
+      },
+      "2022": {
+        "year": 2022,
+        "total": 11150
+      },
+      "2023": {
+        "year": 2023,
+        "total": 10610
+      }
+    },
+    "history": {
+      "2014-06-27": {
+        "event": "Sale",
+        "date": "2014-06-27T00:00:00.000Z"
+      }
+    },
+    "owner": {
+      "names": [
+        "DIJOY DIVAKARAN"
+      ],
+      "mailingAddress": {
+        "id": "1804-Manada-Trl,-Cedar-Park,-TX-78641",
+        "formattedAddress": "1804 Manada Trl, Cedar Park, TX 78641",
+        "addressLine1": "1804 Manada Trl",
+        "addressLine2": null,
+        "city": "Cedar Park",
+        "state": "TX",
+        "stateFips": "48",
+        "zipCode": "78641"
+      }
+    },
+    "ownerOccupied": true
+  }
+]Atg
