@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { AddressSuggestion, SelectedAddress } from "../types/address";
 
 const SMARTY_KEY = process.env.NEXT_PUBLIC_SMARTY_KEY || "";
-const SMARTY_AUTOCOMPLETE_URL = "https://us-autocomplete.api.smarty.com/suggest";
+const SMARTY_AUTOCOMPLETE_URL = "https://us-autocomplete-pro.api.smarty.com/lookup";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+
+
 
 function debounce<T extends (...args: Parameters<T>) => void>(
   func: T,
@@ -46,17 +50,24 @@ export default function AddressSearchPage() {
     try {
       const params = new URLSearchParams({
         key: SMARTY_KEY,
-        prefix: search,
+        search: search,
+        max_results: "10",
       });
 
       const response = await fetch(`${SMARTY_AUTOCOMPLETE_URL}?${params}`);
+      const data = await response.json();
+
+      // Smarty returns errors as a JSON body even on non-200 responses
+      if (data.errors?.length) {
+        throw new Error(data.errors[0].message || "Smarty API error");
+      }
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
 
-      const data = await response.json();
-      setSuggestions(data.suggestions || []);
+      // Pro API returns 'result', standard API returns 'suggestions'
+      setSuggestions(data.result || data.suggestions || []);
       setShowDropdown(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch suggestions");
@@ -263,7 +274,7 @@ export default function AddressSearchPage() {
                     state: selectedAddress.state,
                     zipcode: selectedAddress.zipcode,
                   });
-                  router.push(`/property?${params.toString()}`);
+                  router.push(`${BASE_PATH}/property?${params.toString()}`);
                 }}
                 className="flex-1 rounded-lg bg-zinc-900 px-4 py-2.5 font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
               >

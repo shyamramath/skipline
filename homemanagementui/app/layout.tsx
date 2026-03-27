@@ -37,7 +37,7 @@ export default function RootLayout({
             className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat opacity-20"
             style={{
               backgroundImage:
-                "url('/cartoon-drawing-neighborhood-with-houses-background.avif')",
+                `url('${process.env.NEXT_PUBLIC_BASE_PATH}/cartoon-drawing-neighborhood-with-houses-background.avif')`,
             }}
           />
           <Header />

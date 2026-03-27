@@ -13,6 +13,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Build-time env vars (NEXT_PUBLIC_* are baked in at build time)
+ARG NEXT_PUBLIC_API_URL=https://aneighboratx.com/homemanagementapi
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Provide placeholder for server-side secrets so the build can collect page data.
 # Real values are injected at runtime via environment variables.
 ENV STRIPE_SECRET_KEY=placeholder_build_only

@@ -81,6 +81,10 @@ const MOCK_REPORTS: Record<string, ReportData> = {
   },
 };
 
+export function generateStaticParams() {
+  return Object.keys(MOCK_REPORTS).map((id) => ({ id }));
+}
+
 export default async function ReportPage({
   params,
 }: {

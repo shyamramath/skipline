@@ -183,7 +183,7 @@ function ServicesContent() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Redirect to inventory on success
-      window.location.href = "/inventory";
+      window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/inventory`;
     } catch {
       setSaving(false);
     }

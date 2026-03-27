@@ -4,26 +4,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Property } from "../types/property";
 import { useAuth } from "../context/AuthContext";
+import { apiFetch } from "../lib/apiFetch";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 export default function InventoryPage() {
-  const { user, isAuthenticated, login } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [inventory, setInventory] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   useEffect(() => {
     async function fetchInventory() {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/home/myhomes`, {
-          credentials: "include",
-        });
-        if (response.status === 401) {
-          setIsSessionExpired(true);
-          throw new Error("Session expired");
-        }
+        const response = await apiFetch(`${API_BASE_URL}/api/home/myhomes`);
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
         }
@@ -55,37 +49,6 @@ export default function InventoryPage() {
   }
 
   if (error) {
-    if (isSessionExpired) {
-      return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-          <main className="mx-auto max-w-6xl px-6 py-12">
-            <div className="rounded-xl border border-zinc-200 bg-white p-12 text-center dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-                <svg className="h-8 w-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-                Session Expired
-              </h2>
-              <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-                Your session has expired. Please login again to view your inventory.
-              </p>
-              <button
-                onClick={login}
-                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
-                Login Again
-              </button>
-            </div>
-          </main>
-        </div>
-      );
-    }
-
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <main className="mx-auto max-w-6xl px-6 py-12">

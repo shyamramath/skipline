@@ -107,8 +107,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
           if (normalizedUser) {
             setUser(normalizedUser);
+            localStorage.removeItem("auth_user");
             return true;
           }
+        }
+      }
+
+      // Fallback: check localStorage for user set during OAuth success redirect
+      // (handles cross-origin cookie issues between www.aneighboratx.com and aneighboratx.com)
+      const stored = localStorage.getItem("auth_user");
+      if (stored) {
+        try {
+          const storedUser = JSON.parse(stored);
+          if (storedUser?.email) {
+            setUser(storedUser);
+            return true;
+          }
+        } catch {
+          localStorage.removeItem("auth_user");
         }
       }
 
@@ -148,7 +164,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout error:", error);
     } finally {
       setUser(null);
-      window.location.href = "/";
+      localStorage.removeItem("auth_user");
+      window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/`;
     }
   }, []);
 

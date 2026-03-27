@@ -53,7 +53,7 @@ export default function SignupPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Redirect to search on success
-      window.location.href = "/search";
+      window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/search`;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed");
     } finally {

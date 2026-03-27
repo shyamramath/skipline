@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -27,9 +28,13 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 dark:bg-zinc-100">
-              <span className="text-sm font-bold text-white dark:text-zinc-900">{APP_CONFIG.logo}</span>
-            </div>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/Aneighbour.png`}
+              alt={APP_CONFIG.name}
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
             <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {APP_CONFIG.name}
             </span>
@@ -62,20 +67,12 @@ export default function Header() {
             ) : isAuthenticated ? (
               <UserMenu user={user} logout={logout} />
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-                >
-                  Sign up
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              >
+                Login
+              </Link>
             )}
           </div>
 
@@ -337,22 +334,13 @@ function MobileMenu({
               Sign out
             </button>
           ) : (
-            <>
-              <Link
-                href="/login"
-                onClick={() => setIsOpen(false)}
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-700"
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setIsOpen(false)}
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-700"
-              >
-                Sign up
-              </Link>
-            </>
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="block rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-700"
+            >
+              Login
+            </Link>
           )}
         </div>
       )}

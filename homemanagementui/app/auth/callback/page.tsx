@@ -16,8 +16,8 @@ function AuthCallbackContent() {
       // Store the token
       localStorage.setItem("auth_token", token);
 
-      // Redirect to home page
-      router.replace("/");
+      // Redirect to dashboard
+      router.replace("/dashboard");
     } else {
       setError("No authentication token received");
     }

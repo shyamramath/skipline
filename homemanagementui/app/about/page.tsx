@@ -102,7 +102,7 @@ export default function AboutPage() {
           <div className="mt-8 grid gap-8 md:grid-cols-2">
             {[
               {
-                name: "Michael Chen",
+                name: "Sathyan Meethal",
                 role: "Co-Founder & CEO",
                 bio: "Former software engineer turned home inspection advocate. Michael brings a tech-forward approach to traditional home services, ensuring our clients get detailed, data-driven insights about their properties.",
                 image: "👨‍💼",

@@ -4,8 +4,10 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Property } from "../types/property";
+import { apiFetch } from "../lib/apiFetch";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -76,12 +78,11 @@ function PropertyContent() {
     setSaveMessage(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/home/save`, {
+      const response = await apiFetch(`${API_BASE_URL}/api/home/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify(property),
       });
 
@@ -96,8 +97,8 @@ function PropertyContent() {
 
       // Redirect to services page for this property
       window.location.href = property.assessorID
-        ? `/services?assessorId=${encodeURIComponent(property.assessorID)}`
-        : "/services";
+        ? `${BASE_PATH}/services?assessorId=${encodeURIComponent(property.assessorID)}`
+        : `${BASE_PATH}/services`;
     } catch (err) {
       setSaveStatus("error");
       setSaveMessage(err instanceof Error ? err.message : "Failed to save property");
@@ -135,6 +136,10 @@ function PropertyContent() {
           response = await fetch(`${API_BASE_URL}/api/home/dummyproperty`);
         }
 
+        if (response.status === 401) {
+          throw new Error("MAINTENANCE");
+        }
+
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
         }
@@ -163,13 +168,47 @@ function PropertyContent() {
   }
 
   if (error) {
+    const isMaintenance = error === "MAINTENANCE";
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-        <div className="rounded-lg bg-red-50 p-6 text-center dark:bg-red-900/20">
-          <p className="text-lg font-medium text-red-600 dark:text-red-400">Error: {error}</p>
-          <Link href="/" className="mt-4 inline-block text-sm text-zinc-600 hover:underline dark:text-zinc-400">
-            Go back home
-          </Link>
+        <div className="w-full max-w-md px-6">
+          <div className={`rounded-2xl border p-8 text-center shadow-sm ${
+            isMaintenance
+              ? "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20"
+              : "border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-900/20"
+          }`}>
+            <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full ${
+              isMaintenance ? "bg-amber-100 dark:bg-amber-900/40" : "bg-red-100 dark:bg-red-900/40"
+            }`}>
+              {isMaintenance ? (
+                <svg className="h-7 w-7 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                </svg>
+              ) : (
+                <svg className="h-7 w-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+              )}
+            </div>
+            <h2 className={`text-xl font-bold ${
+              isMaintenance ? "text-amber-800 dark:text-amber-300" : "text-red-700 dark:text-red-400"
+            }`}>
+              {isMaintenance ? "Under Maintenance" : "Something went wrong"}
+            </h2>
+            <p className={`mt-2 text-sm ${
+              isMaintenance ? "text-amber-700 dark:text-amber-400" : "text-red-600 dark:text-red-400"
+            }`}>
+              {isMaintenance
+                ? "Property search is not available due to maintenance work. Please try again later."
+                : error}
+            </p>
+            <Link
+              href="/"
+              className="mt-6 inline-block rounded-lg bg-zinc-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Go back home
+            </Link>
+          </div>
         </div>
       </div>
     );
