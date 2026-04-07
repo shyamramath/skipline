@@ -6,9 +6,6 @@ import { AddressSuggestion, SelectedAddress } from "../types/address";
 
 const SMARTY_KEY = process.env.NEXT_PUBLIC_SMARTY_KEY || "";
 const SMARTY_AUTOCOMPLETE_URL = "https://us-autocomplete-pro.api.smarty.com/lookup";
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
-
-
 
 
 function debounce<T extends (...args: Parameters<T>) => void>(
@@ -274,7 +271,7 @@ export default function AddressSearchPage() {
                     state: selectedAddress.state,
                     zipcode: selectedAddress.zipcode,
                   });
-                  router.push(`${BASE_PATH}/property?${params.toString()}`);
+                  router.push(`/property?${params.toString()}`);
                 }}
                 className="flex-1 rounded-lg bg-zinc-900 px-4 py-2.5 font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
               >

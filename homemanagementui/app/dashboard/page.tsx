@@ -1,44 +1,35 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
+import { apiFetch } from "../lib/apiFetch";
 
-const RECENT_INSPECTIONS = [
-  {
-    id: "insp-001",
-    address: "1234 Elm St, Sacramento, CA 95814",
-    types: ["General", "Roof", "HVAC"],
-    date: "2026-02-15",
-    status: "scheduled" as const,
-  },
-  {
-    id: "insp-002",
-    address: "5678 Oak Ave, Sacramento, CA 95816",
-    types: ["Plumbing", "Electrical"],
-    date: "2026-02-10",
-    status: "in-progress" as const,
-  },
-  {
-    id: "insp-003",
-    address: "910 Maple Dr, Elk Grove, CA 95624",
-    types: ["General", "Pest Control"],
-    date: "2026-01-28",
-    status: "completed" as const,
-  },
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-const STATUS_STYLES = {
-  scheduled: "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
-  "in-progress": "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300",
-  completed: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
+interface Inspection {
+  id: number;
+  assessorId: string;
+  propertyAddress: string;
+  inspectionTypes: string;
+  scheduledDate: string;
+  timeSlot: string;
+  notes: string;
+  status: string;
+  createdAt: string;
+}
+
+const STATUS_STYLES: Record<string, string> = {
+  SCHEDULED: "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
+  "IN-PROGRESS": "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300",
+  COMPLETED: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
 };
 
-const STATUS_LABELS = {
-  scheduled: "Scheduled",
-  "in-progress": "In Progress",
-  completed: "Completed",
+const STATUS_LABELS: Record<string, string> = {
+  SCHEDULED: "Scheduled",
+  "IN-PROGRESS": "In Progress",
+  COMPLETED: "Completed",
 };
 
 function formatDate(dateStr: string) {
@@ -53,11 +44,23 @@ export default function DashboardPage() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const router = useRouter();
 
+  const [inspections, setInspections] = useState<Inspection[]>([]);
+  const [inspectionsLoading, setInspectionsLoading] = useState(true);
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push("/login");
     }
   }, [isLoading, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    apiFetch(`${API_BASE_URL}/api/inspection/my`)
+      .then((res) => res.ok ? res.json() : [])
+      .then((data) => setInspections(Array.isArray(data) ? data : []))
+      .catch(() => setInspections([]))
+      .finally(() => setInspectionsLoading(false));
+  }, [isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -69,9 +72,7 @@ export default function DashboardPage() {
 
   if (!isAuthenticated || !user) return null;
 
-  const displayName =
-    user.firstName || user.name?.split(" ")[0] || "there";
-
+  const displayName = user.firstName || user.name?.split(" ")[0] || "there";
   const initials =
     user.firstName && user.lastName
       ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
@@ -80,7 +81,7 @@ export default function DashboardPage() {
   const stats = [
     {
       label: "Scheduled",
-      value: RECENT_INSPECTIONS.filter((i) => i.status === "scheduled").length,
+      value: inspections.filter((i) => i.status === "SCHEDULED").length,
       color: "text-blue-600 dark:text-blue-400",
       bg: "bg-blue-50 dark:bg-blue-900/20",
       icon: (
@@ -91,7 +92,7 @@ export default function DashboardPage() {
     },
     {
       label: "In Progress",
-      value: RECENT_INSPECTIONS.filter((i) => i.status === "in-progress").length,
+      value: inspections.filter((i) => i.status === "IN-PROGRESS").length,
       color: "text-amber-600 dark:text-amber-400",
       bg: "bg-amber-50 dark:bg-amber-900/20",
       icon: (
@@ -102,7 +103,7 @@ export default function DashboardPage() {
     },
     {
       label: "Completed",
-      value: RECENT_INSPECTIONS.filter((i) => i.status === "completed").length,
+      value: inspections.filter((i) => i.status === "COMPLETED").length,
       color: "text-green-600 dark:text-green-400",
       bg: "bg-green-50 dark:bg-green-900/20",
       icon: (
@@ -113,7 +114,7 @@ export default function DashboardPage() {
     },
     {
       label: "Total Inspections",
-      value: RECENT_INSPECTIONS.length,
+      value: inspections.length,
       color: "text-zinc-600 dark:text-zinc-400",
       bg: "bg-zinc-100 dark:bg-zinc-800",
       icon: (
@@ -242,49 +243,66 @@ export default function DashboardPage() {
                   Recent Inspections
                 </h2>
                 <Link
-                  href="/schedule-inspection/view"
+                  href="/schedule-inspection/create"
                   className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
-                  View all →
+                  + Schedule new
                 </Link>
               </div>
-              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                {RECENT_INSPECTIONS.map((inspection) => (
-                  <div key={inspection.id} className="flex items-start justify-between gap-3 px-5 py-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                        {inspection.address}
-                      </p>
-                      <div className="mt-1 flex flex-wrap gap-1">
-                        {inspection.types.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-                          >
-                            {t}
-                          </span>
-                        ))}
+
+              {inspectionsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-700 dark:border-zinc-600 dark:border-t-zinc-300" />
+                </div>
+              ) : inspections.length === 0 ? (
+                <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+                  <svg className="h-10 w-10 text-zinc-300 dark:text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 002.25 2.25h.75" />
+                  </svg>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">No inspections scheduled yet.</p>
+                  <Link
+                    href="/schedule-inspection/create"
+                    className="mt-1 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    Schedule your first inspection
+                  </Link>
+                </div>
+              ) : (
+                <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                  {inspections.slice(0, 5).map((inspection) => {
+                    const types = inspection.inspectionTypes
+                      ? inspection.inspectionTypes.split(",").map((t) => t.trim()).filter(Boolean)
+                      : [];
+                    const statusStyle = STATUS_STYLES[inspection.status] || STATUS_STYLES["SCHEDULED"];
+                    const statusLabel = STATUS_LABELS[inspection.status] || inspection.status;
+                    return (
+                      <div key={inspection.id} className="flex items-start justify-between gap-3 px-5 py-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                            {inspection.propertyAddress}
+                          </p>
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {types.map((t) => (
+                              <span
+                                key={t}
+                                className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs capitalize text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
+                            {formatDate(inspection.scheduledDate)} · {inspection.timeSlot}
+                          </p>
+                        </div>
+                        <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyle}`}>
+                          {statusLabel}
+                        </span>
                       </div>
-                      <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
-                        {formatDate(inspection.date)}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 flex-col items-end gap-2">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[inspection.status]}`}>
-                        {STATUS_LABELS[inspection.status]}
-                      </span>
-                      {inspection.status === "completed" && (
-                        <Link
-                          href={`/schedule-inspection/view/${inspection.id}/report`}
-                          className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
-                        >
-                          View report
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 

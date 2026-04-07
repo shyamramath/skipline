@@ -156,21 +156,26 @@ function ScheduleInspectionContent() {
 
     setSubmitting(true);
     try {
-      // TODO: Implement actual schedule inspection API call
-      console.log("Schedule inspection:", {
-        assessorId: selectedProperty.assessorID,
-        inspectionTypes: Array.from(selectedTypes),
-        date: selectedDate,
-        time: selectedTime,
-        notes,
+      const response = await apiFetch(`${API_BASE_URL}/api/inspection/schedule`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assessorId: selectedProperty.assessorID,
+          inspectionTypes: Array.from(selectedTypes),
+          date: selectedDate,
+          time: selectedTime,
+          notes,
+        }),
       });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (!response.ok) {
+        const msg = await response.text();
+        throw new Error(msg || `Failed to schedule: ${response.status}`);
+      }
 
-      // Redirect to inventory on success
       window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/inventory`;
-    } catch {
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to schedule inspection. Please try again.");
       setSubmitting(false);
     }
   }
