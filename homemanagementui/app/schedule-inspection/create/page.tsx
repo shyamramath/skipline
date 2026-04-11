@@ -173,7 +173,7 @@ function ScheduleInspectionContent() {
         throw new Error(msg || `Failed to schedule: ${response.status}`);
       }
 
-      window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/inventory`;
+      window.location.href = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/schedule-inspection/view`;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to schedule inspection. Please try again.");
       setSubmitting(false);
