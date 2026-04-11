@@ -22,7 +22,7 @@ public class HttpClient {
                     .get()
                     .addHeader("accept", "application/json")
 //                    .addHeader("X-Api-Key", "49859dead9ca46d2843337b252ed1d9a")
-                    .addHeader("X-Api-Key", "cad25e9149b945ee90c97ce32c34deaf")
+                    .addHeader("X-Api-Key", "6a87f3c98f754f63bf0fea873249ab58")
                     .build();
             Response response = client.newCall(request).execute();
             return response;

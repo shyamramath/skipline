@@ -1,3 +1,11 @@
+Non-SSL URL: http://www.aneighboratx.com:2082/
+SSL URL: https://www.aneighboratx.com:2083/
+
+Username: rzhfiplj
+Password: n!lvI:ZAUk4603
+
+
+
 Stripe API Keys Management Dashboard:
 https://dashboard.stripe.com/apikeys
 
@@ -5,8 +13,12 @@ Start a PostgreSQL container with Docker:
 docker run --name home-service -e POSTGRES_PASSWORD=root -d -p 5432:5432 postgres
 
 
+
+Google Console login.
+https://console.cloud.google.com/auth/clients?project=symmetric-fin-428817-d3
+
 Google login back-end URL
- http://localhost:8080/api/auth/oauth2/authorize/google
+http://localhost:8080/api/auth/oauth2/authorize/google
 
 
  Here's the OAuth 2.0 flow when you access http://localhost:8080/api/auth/oauth2/authorize/google:
