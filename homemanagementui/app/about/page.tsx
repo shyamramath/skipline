@@ -26,23 +26,23 @@ export default function AboutPage() {
           </h2>
           <div className="mt-6 space-y-4 text-zinc-600 dark:text-zinc-400">
             <p>
-              {APP_CONFIG.name} was born out of a frustrating personal experience. In 2018, our founder
-              Michael Chen purchased his first home—a charming 1960s ranch in Austin, Texas.
-              Within six months, he discovered a hidden water leak that had been slowly damaging
-              the foundation for years. The repair cost over $40,000 and could have been prevented
-              with a thorough inspection.
+              {APP_CONFIG.name} was born from a journey that spans three countries and decades of
+              hands-on experience. Our founder, Sathyan Meethal, spent his formative years in India
+              before relocating to Kuwait, where he lived and worked for fourteen years.
             </p>
             <p>
-              That experience sparked a mission: to make professional home inspections accessible,
-              transparent, and truly comprehensive. Michael partnered with his college roommate
-              Sarah Martinez, a licensed structural engineer, and together they built what would
-              become {APP_CONFIG.name}.
+              Sathyan later transitioned to the United States, where he gained extensive experience
+              working with multiple companies and contributed significantly to maintaining and
+              repairing homes across numerous American neighborhoods. Over the years, he witnessed
+              firsthand the challenges homeowners face in keeping their properties in top condition—
+              and the trust that is built when a neighbor shows up and does the job right.
             </p>
             <p>
-              What started as a two-person operation working out of a garage has grown into a
-              trusted home inspection and maintenance company serving thousands of homeowners
-              across Texas. But our core mission remains the same—helping people protect their
-              homes and avoid costly surprises.
+              Inspired by that hands-on experience and a deep sense of community, Sathyan envisioned
+              a company that could bring reliability, transparency, and care to home maintenance
+              management. That vision gave rise to {APP_CONFIG.name}—a name that reflects trust,
+              community connection, and the belief that every homeowner deserves a dependable
+              neighbor they can count on.
             </p>
           </div>
         </section>
@@ -104,26 +104,8 @@ export default function AboutPage() {
               {
                 name: "Sathyan Meethal",
                 role: "Co-Founder & CEO",
-                bio: "Former software engineer turned home inspection advocate. Michael brings a tech-forward approach to traditional home services, ensuring our clients get detailed, data-driven insights about their properties.",
+                bio: "Having spent my formative years relocating from India to Kuwait, where I resided for fourteen years, I later transitioned to the United States and gained extensive experience working with multiple companies. Throughout this journey, I contributed significantly to maintaining and repairing homes across numerous American neighborhoods. Inspired by this hands-on experience, I envisioned establishing a home maintenance management company—thus giving rise to the name \"ANEIGHBOR,\" reflecting trust, reliability, and community connection.",
                 image: "👨‍💼",
-              },
-              {
-                name: "Sarah Martinez",
-                role: "Co-Founder & Chief Inspector",
-                bio: "Licensed structural engineer with 15+ years of experience. Sarah leads our inspection team and has personally trained every inspector on staff to meet her exacting standards.",
-                image: "👩‍🔬",
-              },
-              {
-                name: "David Thompson",
-                role: "Head of Operations",
-                bio: "With a background in hospitality management, David ensures every client interaction exceeds expectations. He's the reason our scheduling is seamless and our reports arrive on time.",
-                image: "👨‍💻",
-              },
-              {
-                name: "Lisa Park",
-                role: "Lead Technology Officer",
-                bio: "Lisa built our proprietary inspection platform from the ground up. Her innovations have cut report delivery time by 60% while increasing detail and accuracy.",
-                image: "👩‍💻",
               },
             ].map((member) => (
               <div
@@ -182,40 +164,40 @@ export default function AboutPage() {
           <div className="mt-8 space-y-6">
             {[
               {
-                year: "2019",
-                title: "The Beginning",
+                year: "2000",
+                title: "Roots in India & Kuwait",
                 description:
-                  "{APP_CONFIG.name} founded in Austin, TX. First inspection completed in Michael's own neighborhood.",
+                  "Sathyan Meethal grew up in India before relocating to Kuwait, where he lived and worked for fourteen years, building resilience and a strong work ethic.",
               },
               {
-                year: "2020",
-                title: "Going Digital",
+                year: "2014",
+                title: "A New Chapter in America",
                 description:
-                  "Launched our digital inspection platform, enabling detailed photo documentation and instant report delivery.",
+                  "Sathyan transitioned to the United States, joining multiple companies and immersing himself in the American home maintenance and repair industry.",
+              },
+              {
+                year: "2018",
+                title: "Hands-On Experience",
+                description:
+                  "After years of contributing to maintaining and repairing homes across numerous American neighborhoods, Sathyan recognized a gap in reliable, community-focused home management services.",
               },
               {
                 year: "2021",
-                title: "Team Expansion",
+                title: "The Vision Takes Shape",
                 description:
-                  "Grew from 2 to 15 team members. Introduced maintenance subscription plans.",
-              },
-              {
-                year: "2022",
-                title: "Regional Growth",
-                description:
-                  "Expanded services to Houston, Dallas, and San Antonio. Completed our 5,000th inspection.",
+                  "Inspired by his journey and the trust built with homeowners along the way, Sathyan conceived ANEIGHBOR—a company rooted in reliability, care, and community connection.",
               },
               {
                 year: "2023",
-                title: "Innovation Award",
+                title: "ANEIGHBOR is Born",
                 description:
-                  "Received Texas Home Inspection Association's Innovation Award for our thermal imaging program.",
+                  "ANEIGHBOR was officially founded in Texas, offering home inspection and maintenance management services built on the values of trust and neighborly care.",
               },
               {
                 year: "2024",
-                title: "Looking Forward",
+                title: "Growing the Community",
                 description:
-                  "Launched QR-code property tracking and mobile app. Planning expansion to neighboring states.",
+                  "Launched digital property tracking, QR-code management, and an online platform to empower homeowners across Texas to manage their homes with confidence.",
               },
             ].map((milestone, index) => (
               <div key={milestone.year} className="flex gap-4">

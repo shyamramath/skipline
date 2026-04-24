@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Property } from "../types/property";
 import { apiFetch } from "../lib/apiFetch";
+import { useAuth } from "../context/AuthContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -55,6 +56,7 @@ function StatCard({ label, value, icon }: { label: string; value: string | numbe
 
 function PropertyContent() {
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -235,14 +237,22 @@ function PropertyContent() {
               {property.ownerOccupied && <Badge variant="success">Owner Occupied</Badge>}
               {hasSearchedAddress && <Badge variant="success">Searched</Badge>}
             </div>
+            {!user?.phoneNumber && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Add your phone number to enable this action.
+              </p>
+            )}
             <button
               onClick={handleAddToInventory}
-              disabled={saveStatus === "saving" || saveStatus === "success"}
+              disabled={!user?.phoneNumber || saveStatus === "saving" || saveStatus === "success"}
+              title={!user?.phoneNumber ? "Please add your phone number first" : undefined}
               className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                 saveStatus === "success"
                   ? "bg-green-600 text-white"
                   : saveStatus === "saving"
                   ? "bg-zinc-400 text-white cursor-wait"
+                  : !user?.phoneNumber
+                  ? "bg-zinc-300 text-zinc-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500"
                   : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
               }`}
             >

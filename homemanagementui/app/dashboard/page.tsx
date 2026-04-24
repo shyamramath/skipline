@@ -78,7 +78,23 @@ export default function DashboardPage() {
       ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
       : user.name?.charAt(0) || "U";
 
+  const today = new Date().toISOString().split("T")[0];
+  const immediateCount = inspections.filter(
+    (i) => i.status === "SCHEDULED" && i.scheduledDate <= today
+  ).length;
+
   const stats = [
+    {
+      label: "Immediate Attention",
+      value: immediateCount,
+      color: "text-red-600 dark:text-red-400",
+      bg: "bg-red-50 dark:bg-red-900/20",
+      icon: (
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      ),
+    },
     {
       label: "Scheduled",
       value: inspections.filter((i) => i.status === "SCHEDULED").length,
@@ -219,11 +235,15 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats */}
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+              className={`rounded-xl border bg-white p-5 shadow-sm dark:bg-zinc-900 ${
+                stat.label === "Immediate Attention" && stat.value > 0
+                  ? "border-red-300 ring-2 ring-red-200 dark:border-red-700 dark:ring-red-900/40"
+                  : "border-zinc-200 dark:border-zinc-800"
+              }`}
             >
               <div className={`mb-3 inline-flex rounded-lg p-2 ${stat.bg}`}>
                 <span className={stat.color}>{stat.icon}</span>

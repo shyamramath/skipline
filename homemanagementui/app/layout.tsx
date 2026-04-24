@@ -20,6 +20,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: APP_CONFIG.name,
   description: APP_CONFIG.description,
+  icons: {
+    icon: "/Aneighbour.png",
+    apple: "/Aneighbour.png",
+  },
 };
 
 export default function RootLayout({

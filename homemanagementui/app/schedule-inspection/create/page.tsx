@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Property } from "../../types/property";
 import { apiFetch } from "../../lib/apiFetch";
+import { useAuth } from "../../context/AuthContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -82,6 +83,7 @@ const TIME_SLOTS = [
 
 function ScheduleInspectionContent() {
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const preselectedAssessorId = searchParams.get("assessorId");
   // Inventory state
   const [inventory, setInventory] = useState<Property[]>([]);
@@ -182,7 +184,8 @@ function ScheduleInspectionContent() {
 
   const allSelected = selectedTypes.size === ALL_TYPE_IDS.length;
   const today = new Date().toISOString().split("T")[0];
-  const canSubmit = selectedProperty && selectedDate && selectedTime && selectedTypes.size > 0;
+  const hasPhone = !!user?.phoneNumber;
+  const canSubmit = hasPhone && selectedProperty && selectedDate && selectedTime && selectedTypes.size > 0;
 
   if (loading) {
     return (
@@ -402,6 +405,11 @@ function ScheduleInspectionContent() {
 
           {/* Section 5 — Actions */}
           <div className="flex flex-col gap-3">
+            {!hasPhone && (
+              <p className="rounded-lg bg-amber-50 px-4 py-2.5 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                Please add your phone number before scheduling an inspection.
+              </p>
+            )}
             <button
               type="button"
               onClick={handleSubmit}

@@ -29,7 +29,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/Aneighbour.png`}
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/Aneighbour.jpeg`}
               alt={APP_CONFIG.name}
               width={32}
               height={32}

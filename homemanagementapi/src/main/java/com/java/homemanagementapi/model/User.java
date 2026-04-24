@@ -35,6 +35,9 @@ public class User {
 
     private String locale;
 
+    @Column(name = "phone_number", length = 20)
+    private String phoneNumber;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime lastLoginAt;

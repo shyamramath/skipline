@@ -41,6 +41,7 @@ public class SessionController {
             userData.put("firstName", dbUser.getGivenName() != null ? dbUser.getGivenName() : "");
             userData.put("lastName", dbUser.getFamilyName() != null ? dbUser.getFamilyName() : "");
             userData.put("picture", dbUser.getPicture() != null ? dbUser.getPicture() : "");
+            userData.put("phoneNumber", dbUser.getPhoneNumber() != null ? dbUser.getPhoneNumber() : "");
             userData.put("id", dbUser.getId());
         } else {
             // Fallback to OAuth2User attributes

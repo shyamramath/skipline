@@ -391,12 +391,12 @@ function LandingPage() {
                 Register your home with {APP_CONFIG.name} and let our expert handymen take care of all your repair needs. From minor fixes to major renovations, we&apos;ve got you covered.
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center md:justify-start">
-                <Link
-                  href="/login"
+                <a
+                  href="#how-it-works"
                   className="flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-8 text-white transition-colors hover:bg-blue-700"
                 >
                   Get Started
-                </Link>
+                </a>
                 <Link
                   href="/about"
                   className="flex h-12 items-center justify-center rounded-full border border-zinc-300 bg-white px-8 text-zinc-900 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
@@ -437,7 +437,7 @@ function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="border-t border-zinc-200 bg-white py-16 dark:border-zinc-800 dark:bg-zinc-900">
+      <section id="how-it-works" className="border-t border-zinc-200 bg-white py-16 dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -486,6 +486,31 @@ function LandingPage() {
               <p className="mt-2 text-zinc-600 dark:text-zinc-400">
                 Sit back and relax while our skilled handymen handle all the repairs professionally.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Video Section */}
+      <section className="border-t border-zinc-200 bg-zinc-50 py-16 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+              See It In Action
+            </h2>
+            <p className="mt-4 text-zinc-600 dark:text-zinc-400">
+              Watch how {APP_CONFIG.name} makes home management effortless
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-zinc-200 shadow-xl dark:border-zinc-800">
+            <div className="relative aspect-video w-full">
+              <iframe
+                className="absolute inset-0 h-full w-full"
+                src="https://www.youtube.com/embed/P7e7GMhLup0?rel=0&modestbranding=1"
+                title="ANeighbor Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
           </div>
         </div>

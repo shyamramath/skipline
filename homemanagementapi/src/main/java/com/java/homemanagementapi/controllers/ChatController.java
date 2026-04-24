@@ -23,8 +23,7 @@ public class ChatController {
     public ResponseEntity<ChatResponse> sendMessage(@RequestBody ChatRequest request) {
         try {
 
-            if(true
-            ) {
+            if(false) {
                 String reply = chatService.chat(request.getMessage(), request.getHistory());
                 return ResponseEntity.ok(new ChatResponse(reply));
             }else{

@@ -1,0 +1,66 @@
+ANeighbour App - Voice Recording Script
+========================================
+
+[INTRO - Warm, welcoming tone]
+
+Welcome to ANeighbour — your trusted partner in home management.
+
+---
+
+[SECTION 1: What is ANeighbour]
+
+So, what exactly is ANeighbour?
+
+ANeighbour is a comprehensive home management platform designed to help homeowners keep track of their properties in one convenient place. Whether you own a single home or manage multiple properties, ANeighbour gives you instant access to all your property details — from owner information and tax assessments to property features and location data.
+
+Think of it as your digital home assistant — organized, accessible, and always up to date.
+
+---
+
+[SECTION 2: How to Onboard and Add Your Home]
+
+Getting started with ANeighbour is simple.
+
+First, visit our website and sign in using your Google account. This secure login keeps your information safe while making access quick and easy.
+
+Once you're logged in, you're ready to add your first property.
+
+Simply enter your property address, and ANeighbour will automatically pull detailed information about your home — including the owner name, property features.
+
+Review the details, confirm everything looks correct, and click Save.
+
+That's it! Your home is now part of your ANeighbour inventory. You'll even receive a confirmation email with all your property details.
+
+---
+
+[SECTION 3: How ANeighbour Works]
+
+Now, let's talk about how ANeighbour works for you.
+
+Once your home is added, you can access your property dashboard anytime. Here's what you can do:
+
+View Property Details — See comprehensive information about your home, including square footage, bedrooms, bathrooms, year built, and lot size.
+
+Track Owner Information — Keep owner records and mailing addresses organized and accessible.
+
+Access Tax Assessments — Review property tax information and assessed values all in one place.
+
+Generate QR Codes — Each property gets a unique QR code that links directly to its details — perfect for sharing or quick reference.
+
+Stay Notified — When you add a new property, you'll receive instant email and SMS notifications confirming the addition.
+
+And if you ever have questions, our AI-powered chat assistant is available to help guide you through any home management questions you might have.
+
+---
+
+[CLOSING]
+
+ANeighbour — making home management simple, organized, and stress-free.
+
+Sign up today and take control of your property information.
+
+Thank you for choosing ANeighbour.
+
+---
+
+[TOTAL ESTIMATED READ TIME: 2 minutes 30 seconds]

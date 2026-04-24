@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { APP_CONFIG } from "../config/app.config";
 
 export default function ContactPage() {
-  const phoneNumber = "+1 (512) 555-0123";
-  const whatsappNumber = "15125550123";
-  const email = "support@aneighbour.com";
-  const address = "123 Main Street, Austin, TX 78701";
+  const phoneNumber = "512-763-6034";
+  const email = "aneighbouratx@gmail.com";
+  const address = "751 Tomlinson Fort Way, Round Rock, TX 78664";
   const instagramUrl = "https://instagram.com/aneighbouratx";
   const facebookUrl = "https://facebook.com/aneighbour";
 
@@ -66,7 +64,7 @@ export default function ContactPage() {
 
             {/* WhatsApp */}
             <a
-              href={`https://wa.me/${whatsappNumber}?text=Hi%20${APP_CONFIG.name}%2C%20I%20have%20a%20question%20about%20your%20services.`}
+              href="https://chat.whatsapp.com/EwqXVkXPeNZGaReDJk6v9p?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
               className="group rounded-xl border border-zinc-200 bg-white p-6 transition-all hover:border-green-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-700"
@@ -101,7 +99,7 @@ export default function ContactPage() {
               className="group rounded-xl border border-zinc-200 bg-white p-6 transition-all hover:border-purple-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-purple-700"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100 text-2xl dark:bg-purple-900/30">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-purple-100 text-2xl dark:bg-purple-900/30">
                   <svg
                     className="h-7 w-7 text-purple-600 dark:text-purple-400"
                     fill="none"
@@ -116,11 +114,11 @@ export default function ContactPage() {
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
                     Email Us
                   </h3>
-                  <p className="text-lg text-purple-600 dark:text-purple-400">
+                  <p className="break-all text-base text-purple-600 dark:text-purple-400">
                     {email}
                   </p>
                   <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -312,7 +310,7 @@ export default function ContactPage() {
               Register Your Home
             </Link>
             <a
-              href={`https://wa.me/${whatsappNumber}?text=Hi%20${APP_CONFIG.name}%2C%20I%20want%20to%20schedule%20an%20inspection.`}
+              href="https://chat.whatsapp.com/EwqXVkXPeNZGaReDJk6v9p?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-lg border border-white/30 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"

@@ -16,6 +16,7 @@ interface User {
   firstName?: string;
   lastName?: string;
   picture?: string;
+  phoneNumber?: string;
 }
 
 interface AuthContextType {
@@ -66,6 +67,7 @@ function normalizeUser(data: Record<string, unknown>): User | null {
                 (email ? email.split("@")[0] : "") || "User") as string;
   const picture = (userData.picture || userData.imageUrl || userData.avatar ||
                    userData.profilePicture || userData.photo || userData.image || "") as string;
+  const phoneNumber = (userData.phoneNumber || "") as string;
 
   // Must have at least email or id to be valid
   if (!email && !id) {
@@ -73,7 +75,7 @@ function normalizeUser(data: Record<string, unknown>): User | null {
     return null;
   }
 
-  return { id, email, name, firstName, lastName, picture };
+  return { id, email, name, firstName, lastName, picture, phoneNumber };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
